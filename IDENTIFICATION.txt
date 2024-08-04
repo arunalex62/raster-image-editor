@@ -1,0 +1,7 @@
+name "Arun Alex"
+student_id "V00963247"
+email "arunalex62@gmail.com"
+term "2024-05"
+course "SENG475"
+section "T01"
+assignment "cpp_project"
