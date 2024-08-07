@@ -19,16 +19,16 @@ endif()
 set(WINDOW_MOC_OUTPUT ${CMAKE_BINARY_DIR}/moc_mainWindow.cpp)
 add_custom_command(
     OUTPUT ${WINDOW_MOC_OUTPUT}
-    COMMAND $ENV{QTDIR}/bin/moc ${CMAKE_SOURCE_DIR}/app/mainWindow.hpp -o ${WINDOW_MOC_OUTPUT}
-    DEPENDS ${CMAKE_SOURCE_DIR}/app/mainWindow.hpp
+    COMMAND $ENV{QTDIR}/bin/moc ${CMAKE_SOURCE_DIR}/include/mainWindow.hpp -o ${WINDOW_MOC_OUTPUT}
+    DEPENDS ${CMAKE_SOURCE_DIR}/include/mainWindow.hpp
 )
 
-# Add the executable target
-add_executable(editor app/raster_editor.cpp app/mainWindow.cpp ${WINDOW_MOC_OUTPUT})
-# app/lcdrange.cpp app/cannon.cpp ${LCD_RANGE_MOC_OUTPUT} ${CANNON_MOC_OUTPUT})
+# Add the executable with its necessary source/header files.
+add_executable(editor app/raster_editor.cpp app/mainWindow.cpp app/menuBar.cpp
+app/statusBar.cpp ${WINDOW_MOC_OUTPUT})
 
 # Include the Qt include paths
-target_include_directories(editor PUBLIC $ENV{QTDIR}/include app)
+target_include_directories(editor PUBLIC $ENV{QTDIR}/include include)
 
-# Link the Qt3 libraries to the executable
+# Link the Qt libraries to the executable
 target_link_libraries(editor $ENV{QTDIR}/lib/libqt.so.3.3)
