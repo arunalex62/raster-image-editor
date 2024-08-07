@@ -2,13 +2,15 @@
 
 #include "mainWindow.hpp"
 
+// Main file that runs the application
+
 int main( int argc, char **argv )
 {
     QApplication a( argc, argv );
+    // MainWindow contents used as main UI for application.
     MainWindow window;
 
-   // MyWindow w;
-    window.setGeometry( 100, 100, 500, 355 );
+    window.setGeometry( 100, 100, 1920, 1080 );
     a.setMainWidget( &window );
     window.show();
     return a.exec();
