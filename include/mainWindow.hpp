@@ -2,9 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include <qmainwindow.h>
-#include <qpopmenu.h>
 #include <qmessagebox.h>
-#include <qmenubar.h>
 #include <qstring.h>
 #include <qimage.h>
 #include <qlabel.h>
@@ -17,14 +15,14 @@ public:
     MainWindow( QWidget *parent=0, const char *name=0 );
     int imageWidth;
     int imageHeight;
+    QString fileName;
+    QLabel *imageDisplay;
+    QImage imageStorage;
 
 public slots:
     void open();
     void fileOpen();
-private: 
-    QString fileName;
-    QLabel *imageDisplay;
-    QPixmap imagePixmap;
+    void fileExport();
 };
 
 
