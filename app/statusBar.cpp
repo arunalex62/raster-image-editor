@@ -10,6 +10,6 @@ void StatusBar::setStatusBar(MainWindow *mainWindow)
          " Height: " + std::to_string(mainWindow->imageHeight);
         statusBar->message(s); 
     } else {
-        statusBar->message("Test");
+        statusBar->message("Image width and height not found");
     }
 }
