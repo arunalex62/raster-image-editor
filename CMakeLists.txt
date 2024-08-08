@@ -25,7 +25,7 @@ add_custom_command(
 
 # Add the executable with its necessary source/header files.
 add_executable(editor app/raster_editor.cpp app/mainWindow.cpp app/menuBar.cpp
-app/statusBar.cpp ${WINDOW_MOC_OUTPUT})
+app/statusBar.cpp app/fileIO.cpp ${WINDOW_MOC_OUTPUT})
 
 # Include the Qt include paths
 target_include_directories(editor PUBLIC $ENV{QTDIR}/include include)
