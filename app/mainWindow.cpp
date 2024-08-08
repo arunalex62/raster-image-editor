@@ -1,12 +1,9 @@
 #include "mainWindow.hpp"
 #include "menuBar.hpp"
 #include "statusBar.hpp"
-#include "qwidget.h"
-#include "qlabel.h"
-#include <qimage.h>
-#include <qpixmap.h>
-#include <iostream>
-#include <qfiledialog.h>
+#include "fileIO.hpp"
+#include <qwidget.h>
+#include <qstring.h>
 
 MainWindow::MainWindow( QWidget *parent, const char *name )
         : QMainWindow( parent, name ), imageWidth{0}, imageHeight{0},
@@ -14,12 +11,15 @@ MainWindow::MainWindow( QWidget *parent, const char *name )
 {
     MenuBar::setupMenuBar(this);
     imageDisplay->setAlignment(Qt::AlignCenter);
-    // if(imagePixmap.load(fileName)) {
-    //     std::cout << "Works!\n";
-    //     imageDisplay->setPixmap(imagePixmap);
-    //     imageDisplay->show();
-    //     setCentralWidget(imageDisplay);
-    // }
+    imageStorage = QPixmap(1280, 720).convertToImage();
+    imageStorage.fill(16777215);
+    QPixmap pm(imageStorage);
+    imageDisplay->setPixmap(pm);
+    imageDisplay->show();
+    setCentralWidget(imageDisplay);
+    imageWidth = imageStorage.width();
+    imageHeight = imageStorage.height();
+    // Update status bar with width/height of new image.
     StatusBar::setStatusBar(this);
 }
 
@@ -28,25 +28,9 @@ void MainWindow::open() {
 }
 
 void MainWindow::fileOpen() {
-    // Taken from QFileDialog Qt Class Reference Page:
-    // https://doc.qt.io/archives/3.3/qfiledialog.html
-    fileName = QFileDialog::getOpenFileName(
-                    "/home",
-                    "Images (*.png *.jpg)",
-                    this,
-                    "open file dialog",
-                    "Choose a file" );
-    // If filename is found, load the image and display it.
-    if (fileName != "") {
-        if(imagePixmap.load(fileName)) {
-            imageDisplay->setPixmap(imagePixmap);
-            imageDisplay->show();
-            setCentralWidget(imageDisplay);
-            imageWidth = imagePixmap.width();
-            imageHeight = imagePixmap.height();
-            // Update status bar with width/height of new image.
-            StatusBar::setStatusBar(this);
-        }
-    }
-       
+    fileName = FileIO::open(this);    
+}
+
+void MainWindow::fileExport() {
+    FileIO::saveAs(this);       
 }
