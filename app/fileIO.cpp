@@ -1,11 +1,17 @@
 #include "fileIO.hpp"
+#include "statusBar.hpp"
+#include <qfiledialog.h>
+#include <qdir.h>
+#include <qfileinfo.h>
+#include <qmessagebox.h>
 
 QString FileIO::open(MainWindow *mainWindow) {
+    QDir dir;
     // Taken from QFileDialog Qt Class Reference Page:
     // https://doc.qt.io/archives/3.3/qfiledialog.html
     QString fileName = QFileDialog::getOpenFileName(
-                    "/home",
-                    "Images (*.png *.jpg)",
+                    dir.absPath(),
+                    "Images (*.png *.jpg *.jpeg *.bmp *.ppm)",
                     mainWindow,
                     "open file dialog",
                     "Choose a file" );
@@ -13,16 +19,18 @@ QString FileIO::open(MainWindow *mainWindow) {
     // If a file was chosen, then load that file into the imageStorage array
     // and display it to the user through a Pixmap.
     if (fileName != "") {
-        if(mainWindow->imageStorage.load(fileName)) {
-            QPixmap pm(mainWindow->imageStorage);
-            mainWindow->imageDisplay->setPixmap(pm);
-            mainWindow->imageDisplay->show();
-            mainWindow->setCentralWidget(mainWindow->imageDisplay);
-            mainWindow->imageWidth = mainWindow->imageStorage.width();
-            mainWindow->imageHeight = mainWindow->imageStorage.height();
+        if(mainWindow->imageView->buffer.load(fileName)) {
+            QPixmap pm(mainWindow->imageView->buffer);
+            mainWindow->setCentralWidget(mainWindow->imageView);
+            mainWindow->imageView->repaint();
             // Update status bar with width/height of new image.
             StatusBar::setStatusBar(mainWindow);
+        } else {
+            QMessageBox::warning(mainWindow, "Raster Editor",
+             "There was an error opening the image. Perhaps the file is corrupted.");
+             return "";
         }
+        // Add a dialog if the loading of the image fails.
     }
     return fileName;
 }
@@ -40,6 +48,7 @@ void FileIO::saveAs(MainWindow *mainWindow) {
         "Export File Dialog"
         "Choose a file name (append the appropriate extension at the end of the file name)"
     );
+    // Handles if the user exits/cancels out of the dialog.
     if(outputName == "") {
         return;
     }
@@ -49,21 +58,21 @@ void FileIO::saveAs(MainWindow *mainWindow) {
     if(extension == "jpg") {
         extension = "jpeg";
     }
-    if(extension != "png" || extension != "jpeg" || extension != "bmp" || extension != "ppm") {
+    if(extension != "png" && extension != "jpeg" && extension != "bmp" && extension != "ppm") {
         QMessageBox::warning(mainWindow, "Raster Editor",
-        "Please choose a valid image format. Supported image formats are .png, .jpg, .jpeg, .bmp, and .ppm.");
+        "Please specify a valid image format. Supported image formats are .png, .jpg, .jpeg, .bmp, and .ppm.");
         return;
     }
 
     // Saving file to the location specified if extension is valid.
     if (outputName != "") {
-        bool imageSaved = mainWindow->imageStorage.save(outputName, extension.upper());
+        bool imageSaved = mainWindow->imageView->buffer.save(outputName, extension.upper());
         // Display status messages depending on if file was saved successfully.
         if(imageSaved) {
             QMessageBox::information(mainWindow, "Raster Editor", "Image saved successfully to: " + outputName);
         } else {
             QMessageBox::warning(mainWindow, "Raster Editor",
-             "There was an error saving the image.Perhaps the directory is not writable");
+             "There was an error saving the image. Perhaps the directory is not writable.");
              return;
         }
     }

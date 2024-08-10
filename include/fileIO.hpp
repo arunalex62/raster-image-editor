@@ -2,11 +2,7 @@
 #define FILEIO_HPP
 
 #include "mainWindow.hpp"
-#include "statusBar.hpp"
-#include <qfiledialog.h>
-#include <qdir.h>
-#include <qfileinfo.h>
-#include <qmessagebox.h>
+#include <qstring.h>
 
 class FileIO {
 public:
