@@ -10,7 +10,7 @@ int main( int argc, char **argv )
     // MainWindow contents used as main UI for application.
     MainWindow window;
 
-    window.setGeometry( 100, 100, 1920, 1080 );
+    window.setGeometry( 100, 100, 1280, 720 );
     a.setMainWidget( &window );
     window.show();
     return a.exec();
