@@ -1,15 +1,23 @@
 #include "statusBar.hpp"
 #include <qstatusbar.h>
-#include <string>
-
+#include <qstring.h>
+#include <qlabel.h>
+#include <iostream>
 void StatusBar::setStatusBar(MainWindow *mainWindow)
 {
-    QStatusBar *statusBar = mainWindow->statusBar();
-    if(mainWindow->imageWidth > 0 && mainWindow->imageHeight > 0) {
-        std::string s = "Width: " + std::to_string(mainWindow->imageWidth) +
-         " Height: " + std::to_string(mainWindow->imageHeight);
-        statusBar->message(s); 
+    if(mainWindow->imageView->buffer.width() > 0 && mainWindow->imageView->buffer.height() > 0) {
+        QString dim = "                   " + std::to_string(mainWindow->imageView->buffer.width()) +
+         " x " + std::to_string(mainWindow->imageView->buffer.height());
+         mainWindow->dimensions->setText(dim);
     } else {
-        statusBar->message("Image width and height not found");
+        mainWindow->dimensions->setText("Image width and height not found");
+    }
+    if(mainWindow->imageView->mouseX >= 0 && mainWindow->imageView->mouseX <= mainWindow->imageView->buffer.width()-1
+        && mainWindow->imageView->mouseY >= 0 && mainWindow->imageView->mouseY <= mainWindow->imageView->buffer.height()-1) {
+        QString coords = "X: " + std::to_string(mainWindow->imageView->mouseX) +
+         " | Y:" + std::to_string(mainWindow->imageView->mouseY);
+         mainWindow->mouseInfo->setText(coords);
+    } else {
+        mainWindow->mouseInfo->setText("X: | Y: ");
     }
 }
