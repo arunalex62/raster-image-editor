@@ -1,4 +1,6 @@
 #include "menuBar.hpp"
+#include <qpopupmenu.h>
+#include <qmenubar.h>
 
 // Creating/displaying menu bar items with their click functions linked.
 void MenuBar::setupMenuBar(QMainWindow *mainWindow)
