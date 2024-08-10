@@ -3,24 +3,28 @@
 #include "statusBar.hpp"
 #include "fileIO.hpp"
 #include <qwidget.h>
-#include <qstring.h>
+#include <imageView.hpp>
+#include <qdockwindow.h>
+#include <qtoolbar.h>
+#include <qmessagebox.h>
+#include <qstatusbar.h>
+#include <iostream>
 
 MainWindow::MainWindow( QWidget *parent, const char *name )
-        : QMainWindow( parent, name ), imageWidth{0}, imageHeight{0},
-          fileName{""}, imageDisplay{new QLabel(this)}
+        : QMainWindow( parent, name ), fileName{""}
 {
-    MenuBar::setupMenuBar(this);
-    imageDisplay->setAlignment(Qt::AlignCenter);
-    imageStorage = QPixmap(1280, 720).convertToImage();
-    imageStorage.fill(16777215);
-    QPixmap pm(imageStorage);
-    imageDisplay->setPixmap(pm);
-    imageDisplay->show();
-    setCentralWidget(imageDisplay);
-    imageWidth = imageStorage.width();
-    imageHeight = imageStorage.height();
-    // Update status bar with width/height of new image.
+    mouseInfo = new QLabel("Mouse Information", this);
+    dimensions = new QLabel("Image Dimensions", this);
+    statusBar()->addWidget(mouseInfo);
+    statusBar()->addWidget(dimensions);
+    mouseInfo->setBackgroundColor(9737364);
+    dimensions->setBackgroundColor(9737364);
+    imageView = new ImageView (this);
     StatusBar::setStatusBar(this);
+    statusBar()->setBackgroundColor(9737364);
+    MenuBar::setupMenuBar(this);
+    setCentralWidget(imageView);
+    // Update status bar with width/height of new image.
 }
 
 void MainWindow::open() {
