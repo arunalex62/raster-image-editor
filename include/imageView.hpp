@@ -66,6 +66,13 @@ public:
         }
     }
 
+    void createNewImage(int width, int height) {
+        buffer = QPixmap(width, height);
+        buffer.fill(16777215);
+        repaint();
+        gridDrawHelper();
+    }
+
     QPixmap buffer;
     int mouseX;
     int mouseY;
