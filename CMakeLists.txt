@@ -41,7 +41,8 @@ add_custom_command(
 # Add the executable with its necessary source/header files.
 add_executable(editor app/raster_editor.cpp app/mainWindow.cpp app/menuBar.cpp
 app/statusBar.cpp app/fileIO.cpp app/imageView.cpp app/brushSizeDialogWidget.cpp 
-app/resizeCanvasDialogWidget.cpp ${WINDOW_MOC_OUTPUT} ${IMAGE_MOC_OUTPUT} ${BRUSHSIZEDIALOG_MOC_OUTPUT})
+app/resizeCanvasDialogWidget.cpp app/newImageDialogWidget.cpp
+ ${WINDOW_MOC_OUTPUT} ${IMAGE_MOC_OUTPUT} ${BRUSHSIZEDIALOG_MOC_OUTPUT})
 
 # Include the Qt include and include/ folder.
 target_include_directories(editor PUBLIC $ENV{QTDIR}/include include)
