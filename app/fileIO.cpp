@@ -4,6 +4,7 @@
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qmessagebox.h>
+#include <qimage.h>
 
 QString FileIO::open(MainWindow *mainWindow) {
     QDir dir;
@@ -19,6 +20,22 @@ QString FileIO::open(MainWindow *mainWindow) {
     // If a file was chosen, then load that file into the imageStorage array
     // and display it to the user through a Pixmap.
     if (fileName != "") {
+        QImage image(fileName);
+        if(image.isNull()) {
+            QMessageBox::warning(mainWindow, "Raster Editor",
+             "There was an error opening the image. Perhaps the file is corrupted.");
+             return "";
+        }
+        if(image.width() > 2000 || image.width() < 1) {
+            QMessageBox::warning(mainWindow, "Raster Editor",
+             "Please ensure the image width is between 1 and 2000 pixels.");
+             return "";
+        }
+        if(image.height() > 2000 || image.height() < 1) {
+            QMessageBox::warning(mainWindow, "Raster Editor",
+             "Please ensure the image height is between 1 and 2000 pixels.");
+             return "";
+        }
         if(mainWindow->imageView->buffer.load(fileName)) {
             QPixmap pm(mainWindow->imageView->buffer);
             mainWindow->setCentralWidget(mainWindow->imageView);
@@ -26,12 +43,12 @@ QString FileIO::open(MainWindow *mainWindow) {
             // Update status bar with width/height of new image.
             StatusBar::setStatusBar(mainWindow);
             mainWindow->imageView->gridDrawHelper();
+            QMessageBox::information(mainWindow, "Raster Editor", "Image successfully opened.");
         } else {
             QMessageBox::warning(mainWindow, "Raster Editor",
              "There was an error opening the image. Perhaps the file is corrupted.");
              return "";
         }
-        // Add a dialog if the loading of the image fails.
     }
     return fileName;
 }
@@ -44,7 +61,7 @@ void FileIO::saveAs(MainWindow *mainWindow) {
     // https://stackoverflow.com/questions/47469200/form-of-saving-an-image-in-qt
     QString outputName = QFileDialog::getSaveFileName(
         dir.absPath(),
-        "Images (*.png *.jpeg *.jpg *.bmp)",
+        "Images (*.png *.jpeg *.jpg *.bmp *.ppm)",
         mainWindow,
         "Export File Dialog"
         "Choose a file name (append the appropriate extension at the end of the file name)"
