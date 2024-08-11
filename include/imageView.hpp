@@ -4,6 +4,7 @@
 // the implementation of drawing functionality:
 // https://doc.qt.io/archives/3.3/scribble-example.html
 
+#include <qapplication.h>
 #include <qmainwindow.h>
 #include <qpen.h>
 #include <qpoint.h>
@@ -12,6 +13,7 @@
 #include <qpointarray.h>
 #include <qpainter.h>
 #include <qimage.h>
+#include <qcursor.h>
 
 class QMouseEvent;
 class QResizeEvent;
@@ -55,6 +57,15 @@ public:
         gridDrawHelper();
     }
 
+    void setColourPicker() {
+        enableColourPicker = !enableColourPicker;
+        if(enableColourPicker) {
+            QApplication::setOverrideCursor(QCursor(Qt::CrossCursor));
+        } else {
+            QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+        }
+    }
+
     QPixmap buffer;
     int mouseX;
     int mouseY;
@@ -73,12 +84,14 @@ protected:
     void paintEvent( QPaintEvent *e );
     bool withinBounds (const QMouseEvent *e);
     void drawGridlines(QPainter &painter);
+    void useColourPicker(const int x, const int y);
 
     QPen pen;
     QPointArray polyline;
 
     bool mousePressed;
     bool enableGridLines; 
+    bool enableColourPicker;
 
 };
 

@@ -14,7 +14,7 @@
 ImageView::ImageView( QWidget *parent, const char *name )
     : QWidget( parent, name, WStaticContents ), buffer( 960, 540 ), 
     mouseX(-1), mouseY(-1), pen( Qt::black, 3 ), polyline(3),
-     mousePressed(false), enableGridLines(false) {
+     mousePressed(false), enableGridLines(false), enableColourPicker(false) {
 
     // Set default image to white.
     buffer.fill(16777215);
@@ -26,6 +26,11 @@ void ImageView::mousePressEvent(QMouseEvent *e) {
     mousePressed = true;
     int x = e->pos().x() - (width() - buffer.width())/2;
     int y = e->pos().y() - (height() - buffer.height())/2;
+
+    if(enableColourPicker && withinBounds(e)) {
+        useColourPicker(x, y);
+        return;
+    }
 
     // Map the coordinates within the image boundaries.
     x = std::max(0, std::min(x, buffer.width() - 1));
@@ -41,7 +46,10 @@ void ImageView::mouseReleaseEvent(QMouseEvent *) {
 void ImageView::mouseMoveEvent( QMouseEvent *e ) {
     mouseX = e->pos().x() - (width() - buffer.width())/2;
     mouseY = e->pos().y() - (height() - buffer.height())/2;
-    StatusBar::setStatusBar(static_cast<MainWindow*>(parent()));
+    StatusBar::setStatusBarMouse(static_cast<MainWindow*>(parent()));
+    if(enableColourPicker) {
+        return;
+    }
     if (mousePressed && withinBounds(e)) {
         QPainter painter;
         painter.begin(&buffer);
@@ -89,9 +97,9 @@ void ImageView::paintEvent( QPaintEvent *) {
 // to be checked against the centered image's coordinates, not (0,0).
 
 bool ImageView::withinBounds(const QMouseEvent *e) {
-    if(e->pos().x() > (width() - buffer.width())/2 
+    if(e->pos().x() >= (width() - buffer.width())/2 
     && e->pos().x() < width() - (width() - buffer.width())/2
-    && e->pos().y() > (height() - buffer.height())/2
+    && e->pos().y() >= (height() - buffer.height())/2
     && e->pos().y() < height() - (height() - buffer.height())/2) {
         return true;
     }
@@ -120,4 +128,14 @@ void ImageView::gridDrawHelper() {
         QPainter painter(this);
         drawGridlines(painter);
     }
+}
+
+void ImageView::useColourPicker(const int x, const int y) {
+    QImage image = buffer.convertToImage();
+    QColor color(image.pixel(x, y));
+    setPenColor(color);
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+    enableColourPicker = false;
+    StatusBar::setStatusBarBrushColour(static_cast<MainWindow*>(parent()));
+    return;
 }
