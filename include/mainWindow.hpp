@@ -20,6 +20,7 @@ private slots:
     void open();
     void fileOpen();
     void fileExport();
+    void viewGridlinesToggle();
     void colorDialog();
     void sizeDialog();
 };
