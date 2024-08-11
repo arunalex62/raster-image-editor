@@ -17,7 +17,7 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
 
     QPopupMenu *viewMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("View", viewMenu);
-    viewMenu->insertItem( "Grid-Lines Toggle", mainWindow, SLOT(open()));
+    viewMenu->insertItem( "Grid-Lines Toggle", mainWindow, SLOT(viewGridlinesToggle()));
 
     QPopupMenu *colorDialog = new QPopupMenu( mainWindow );
     menuBar->insertItem("Brush", colorDialog);
