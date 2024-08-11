@@ -6,7 +6,6 @@
 #include <qevent.h>
 #include <qrect.h>
 #include <qpoint.h>
-#include <iostream>
 #include <statusBar.hpp>
 #include "mainWindow.hpp"
 #include <qtimer.h>
