@@ -22,9 +22,22 @@ class ImageView : public QWidget
 public:
     ImageView( QWidget *parent = 0, const char *name = 0 );
 
+    void setPenColor( const QColor &c )
+    { pen.setColor( c ); }
+
+    QColor penColor()
+    { return pen.color(); }
+
+    int penWidth()
+    { return pen.width(); }
+
     QPixmap buffer;
     int mouseX;
     int mouseY;
+
+public slots:
+    void setPenWidth( int w )
+    { pen.setWidth( w ); }
 
 protected:
     void mousePressEvent(QMouseEvent *e);
