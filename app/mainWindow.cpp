@@ -2,13 +2,14 @@
 #include "menuBar.hpp"
 #include "statusBar.hpp"
 #include "fileIO.hpp"
+#include "sizeDialogWidget.hpp"
 #include <qwidget.h>
 #include <imageView.hpp>
 #include <qdockwindow.h>
 #include <qtoolbar.h>
 #include <qmessagebox.h>
 #include <qstatusbar.h>
-#include <iostream>
+#include <qcolordialog.h>
 
 MainWindow::MainWindow( QWidget *parent, const char *name )
         : QMainWindow( parent, name ), fileName{""}
@@ -24,7 +25,6 @@ MainWindow::MainWindow( QWidget *parent, const char *name )
     statusBar()->setBackgroundColor(9737364);
     MenuBar::setupMenuBar(this);
     setCentralWidget(imageView);
-    // Update status bar with width/height of new image.
 }
 
 void MainWindow::open() {
@@ -37,4 +37,15 @@ void MainWindow::fileOpen() {
 
 void MainWindow::fileExport() {
     FileIO::saveAs(this);       
+}
+
+void MainWindow::colorDialog() {
+    const QColor color = QColorDialog::getColor(imageView->penColor(), this, "Color Dialog");
+    imageView->setPenColor(color);
+}
+
+void MainWindow::sizeDialog() {
+    sizeDialogWidget *w = new sizeDialogWidget(this);
+    w->resize(140, 75);
+    w->show();
 }

@@ -16,10 +16,12 @@ public:
     QLabel *mouseInfo;
     QLabel *dimensions;
 
-public slots:
+private slots:
     void open();
     void fileOpen();
     void fileExport();
+    void colorDialog();
+    void sizeDialog();
 };
 
 
