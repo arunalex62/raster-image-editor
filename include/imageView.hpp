@@ -11,6 +11,7 @@
 #include <qwidget.h>
 #include <qpointarray.h>
 #include <qpainter.h>
+#include <qimage.h>
 
 class QMouseEvent;
 class QResizeEvent;
@@ -43,6 +44,15 @@ public:
         } else {
             repaint();
         }
+    }
+
+    void resizeCanvas(double scaleFactor) {
+        QImage imageConversion = buffer.convertToImage();
+        QImage scaled = imageConversion.scale(buffer.width()*scaleFactor,
+         buffer.height()*scaleFactor);
+        buffer = scaled;
+        repaint();
+        gridDrawHelper();
     }
 
     QPixmap buffer;
