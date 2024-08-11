@@ -15,6 +15,8 @@ public:
     ImageView *imageView;
     QLabel *mouseInfo;
     QLabel *dimensions;
+    QLabel *brushColor;
+    QLabel *brushSize;
 
 private slots:
     void open();
@@ -24,6 +26,7 @@ private slots:
     void viewGridlinesToggle();
     void colorDialog();
     void brushSizeDialog();
+    void toolsColourPicker();
 };
 
 

@@ -45,10 +45,16 @@ void MainWindow::viewGridlinesToggle() {
 void MainWindow::colorDialog() {
     const QColor color = QColorDialog::getColor(imageView->penColor(), this, "Color Dialog");
     imageView->setPenColor(color);
+    StatusBar::setStatusBarBrushColour(this);
 }
 
 void MainWindow::brushSizeDialog() {
-    brushSizeDialogWidget *w = new brushSizeDialogWidget(this);
-    w->resize(140, 75);
-    w->show();
+    brushSizeDialogWidget brushDialog(this);
+    brushDialog.resize(140, 75);
+    brushDialog.exec();
+    StatusBar::setStatusBarBrushSize(this);
+}
+
+void MainWindow::toolsColourPicker() {
+    imageView->setColourPicker();
 }
