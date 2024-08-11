@@ -19,6 +19,11 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
     menuBar->insertItem("View", viewMenu);
     viewMenu->insertItem( "Grid-Lines Toggle", mainWindow, SLOT(open()));
 
+    QPopupMenu *colorDialog = new QPopupMenu( mainWindow );
+    menuBar->insertItem("Brush", colorDialog);
+    colorDialog->insertItem ( "Select Color", mainWindow, SLOT(colorDialog()));
+    colorDialog->insertItem ( "Set Brush Size", mainWindow, SLOT(sizeDialog()));
+
     QPopupMenu *helpMenu = new QPopupMenu( mainWindow );
     menuBar->insertSeparator();
     menuBar->insertItem("Help", helpMenu);
