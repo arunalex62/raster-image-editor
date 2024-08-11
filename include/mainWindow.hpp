@@ -17,6 +17,7 @@ public:
     QLabel *dimensions;
     QLabel *brushColor;
     QLabel *brushSize;
+    QLabel *fileNameDisplay;
 
 private slots:
     void open();

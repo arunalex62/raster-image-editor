@@ -30,6 +30,10 @@ public:
     // Method for updating the status bar with the current
     // brush size during the execution of the program.
     static void setStatusBarBrushSize(MainWindow *mainWindow);
+
+    // Method for updating the status bar with the current
+    // name of the file in the editor.
+    static void setStatusBarFileName(MainWindow *mainWindow);
 };
 
 

@@ -26,11 +26,13 @@ void MainWindow::fileOpen() {
     QString result = FileIO::open(this);
     if(result != "") {
         fileName = result;
+        StatusBar::setStatusBarFileName(this);
     }   
 }
 
 void MainWindow::fileExport() {
-    FileIO::saveAs(this);       
+    fileName = FileIO::saveAs(this);     
+    StatusBar::setStatusBarFileName(this);  
 }
 
 void MainWindow::editResizeCanvas() {

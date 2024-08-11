@@ -2,23 +2,25 @@
 #include <qstatusbar.h>
 #include <qstring.h>
 #include <qlabel.h>
-#include <iostream>
 
 void StatusBar::setupStatusBar(MainWindow *mainWindow)
 {
     // Initializing status bar sections for mouse information and 
     // the image dimensions, and adding them to the status bar.
     mainWindow->mouseInfo = new QLabel("Mouse Information", mainWindow);
+    mainWindow->fileNameDisplay = new QLabel("Filename Display", mainWindow);
     mainWindow->dimensions = new QLabel("Image Dimensions", mainWindow);
     mainWindow->brushColor = new QLabel("Selected Brush Colour", mainWindow);
     mainWindow->brushSize = new QLabel("Selected Brush Size", mainWindow);
     mainWindow->statusBar()->addWidget(mainWindow->mouseInfo);
+    mainWindow->statusBar()->addWidget(mainWindow->fileNameDisplay);
     mainWindow->statusBar()->addWidget(mainWindow->dimensions);
     mainWindow->statusBar()->addWidget(mainWindow->brushColor);
     mainWindow->statusBar()->addWidget(mainWindow->brushSize);
 
     // Set statusBar and sub-labels to dark grey colour.
     mainWindow->mouseInfo->setBackgroundColor(9737364);
+    mainWindow->fileNameDisplay->setBackgroundColor(9737364);
     mainWindow->dimensions->setBackgroundColor(9737364);
     mainWindow->brushColor->setBackgroundColor(9737364);
     mainWindow->brushSize->setBackgroundColor(9737364);
@@ -29,6 +31,7 @@ void StatusBar::setupStatusBar(MainWindow *mainWindow)
     setStatusBarMouse(mainWindow);
     setStatusBarBrushColour(mainWindow);
     setStatusBarBrushSize(mainWindow);
+    setStatusBarFileName(mainWindow);
 }
 
 
@@ -78,4 +81,21 @@ void StatusBar::setStatusBarBrushSize(MainWindow *mainWindow)
     QString widthString = "  Brush Size: " + 
     std::to_string(mainWindow->imageView->penWidth()) + "  ";
     mainWindow->brushSize->setText(widthString);
+}
+
+void StatusBar::setStatusBarFileName(MainWindow *mainWindow)
+{
+    // Sets the status bar's file name to the name
+    // of the currently opened/exported file. 
+
+    // If the file name is empty (in the case of a new image),
+    // then display "Untitled Image" as the file name.
+    if(mainWindow->fileName != "") {
+        QString fileNameString = "  File: " + 
+         mainWindow->fileName + "  ";
+        mainWindow->fileNameDisplay->setText(fileNameString);
+    } else {
+        QString fileNameString = "  File: Untitled Project  ";
+        mainWindow->fileNameDisplay->setText(fileNameString);
+    }
 }
