@@ -10,6 +10,7 @@
 #include <qpixmap.h>
 #include <qwidget.h>
 #include <qpointarray.h>
+#include <qpainter.h>
 
 class QMouseEvent;
 class QResizeEvent;
@@ -22,22 +23,37 @@ class ImageView : public QWidget
 public:
     ImageView( QWidget *parent = 0, const char *name = 0 );
 
-    void setPenColor( const QColor &c )
-    { pen.setColor( c ); }
+    void setPenColor( const QColor &c ) { 
+        pen.setColor( c );
+    }
 
-    QColor penColor()
-    { return pen.color(); }
+    QColor penColor() { 
+        return pen.color();
+    }
 
-    int penWidth()
-    { return pen.width(); }
+    int penWidth() { 
+        return pen.width();
+    }
+
+    void gridlinesToggle() {
+        enableGridLines = !enableGridLines;
+        if(enableGridLines){ 
+            QPainter painter(this);
+            drawGridlines(painter);
+        } else {
+            repaint();
+        }
+    }
 
     QPixmap buffer;
     int mouseX;
     int mouseY;
 
 public slots:
-    void setPenWidth( int w )
-    { pen.setWidth( w ); }
+    void setPenWidth( int w ) { 
+        pen.setWidth( w );
+    }
+    void gridDrawHelper();
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -46,11 +62,13 @@ protected:
     void resizeEvent( QResizeEvent *e );
     void paintEvent( QPaintEvent *e );
     bool withinBounds (const QMouseEvent *e);
+    void drawGridlines(QPainter &painter);
 
     QPen pen;
     QPointArray polyline;
 
     bool mousePressed;
+    bool enableGridLines; 
 
 };
 

@@ -4,17 +4,17 @@
 // https://doc.qt.io/archives/3.3/scribble-example.html
 
 #include <qevent.h>
-#include <qpainter.h>
 #include <qrect.h>
 #include <qpoint.h>
 #include <iostream>
 #include <statusBar.hpp>
 #include "mainWindow.hpp"
+#include <qtimer.h>
 
 ImageView::ImageView( QWidget *parent, const char *name )
     : QWidget( parent, name, WStaticContents ), buffer( 960, 540 ), 
     mouseX(-1), mouseY(-1), pen( Qt::black, 3 ), polyline(3),
-     mousePressed( FALSE ) {
+     mousePressed(false), enableGridLines(false) {
 
     // Set default image to white.
     buffer.fill(16777215);
@@ -23,26 +23,26 @@ ImageView::ImageView( QWidget *parent, const char *name )
 }
 
 void ImageView::mousePressEvent(QMouseEvent *e) {
-    mousePressed = TRUE;
-    int x = e->pos().x() - (width() - buffer.width()) / 2;
-    int y = e->pos().y() - (height() - buffer.height()) / 2;
+    mousePressed = true;
+    int x = e->pos().x() - (width() - buffer.width())/2;
+    int y = e->pos().y() - (height() - buffer.height())/2;
 
-    // Ensure the coordinates are clamped within the buffer bounds
+    // Map the coordinates within the image boundaries.
     x = std::max(0, std::min(x, buffer.width() - 1));
     y = std::max(0, std::min(y, buffer.height() - 1));
     polyline[2] = polyline[1] = polyline[0] = QPoint(x, y);
 }
 
 void ImageView::mouseReleaseEvent(QMouseEvent *) {
-    mousePressed = FALSE;
+    mousePressed = false;
+    gridDrawHelper();
 }
 
 void ImageView::mouseMoveEvent( QMouseEvent *e ) {
-    mouseX = e->pos().x() - (width() - buffer.width()) / 2;
-    mouseY = e->pos().y() - (height() - buffer.height()) / 2;
+    mouseX = e->pos().x() - (width() - buffer.width())/2;
+    mouseY = e->pos().y() - (height() - buffer.height())/2;
     StatusBar::setStatusBar(static_cast<MainWindow*>(parent()));
     if (mousePressed && withinBounds(e)) {
-
         QPainter painter;
         painter.begin(&buffer);
         painter.setPen( pen );
@@ -62,14 +62,17 @@ void ImageView::mouseMoveEvent( QMouseEvent *e ) {
     }
 }
 
-void ImageView::resizeEvent( QResizeEvent *e )
-{
+void ImageView::resizeEvent( QResizeEvent *e ) {
     QWidget::resizeEvent(e);
     update();
+    if(enableGridLines) {
+        QTimer *timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(gridDrawHelper()));
+        timer->start(500, TRUE);
+    }
 }
 
-void ImageView::paintEvent( QPaintEvent *)
-{
+void ImageView::paintEvent( QPaintEvent *) {
     QPainter painter(this);
     int x = (width() - buffer.width())/2;
     int y = (height() - buffer.height())/2;
@@ -93,4 +96,28 @@ bool ImageView::withinBounds(const QMouseEvent *e) {
         return true;
     }
     return false;
+}
+
+void ImageView::drawGridlines(QPainter &painter) { 
+    painter.setPen(QPen(Qt::lightGray, 1, Qt::DotLine));
+
+    int xStart = (width() - buffer.width()) / 2;
+    int yStart = (height() - buffer.height()) / 2;
+
+    // Drawing the vertical grid lines in increments of 20 pixels.
+    for (int x = 0; x < buffer.width(); x += 20) {
+        painter.drawLine(x + xStart, yStart, x + xStart, buffer.height() + yStart);
+    }
+
+    // Drawing the horizontal grid lines in increments of 20 pixels.
+    for (int y = 0; y < buffer.height(); y += 20) {
+        painter.drawLine(xStart, y + yStart, buffer.width() + xStart, y + yStart);
+    }
+}
+
+void ImageView::gridDrawHelper() {
+    if(enableGridLines) {
+        QPainter painter(this);
+        drawGridlines(painter);
+    }
 }
