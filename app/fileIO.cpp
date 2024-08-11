@@ -25,6 +25,7 @@ QString FileIO::open(MainWindow *mainWindow) {
             mainWindow->imageView->repaint();
             // Update status bar with width/height of new image.
             StatusBar::setStatusBar(mainWindow);
+            mainWindow->imageView->gridDrawHelper();
         } else {
             QMessageBox::warning(mainWindow, "Raster Editor",
              "There was an error opening the image. Perhaps the file is corrupted.");
