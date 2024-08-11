@@ -21,6 +21,7 @@ public:
 
 private slots:
     void open();
+    void fileNew();
     void fileOpen();
     void fileExport();
     void editResizeCanvas();

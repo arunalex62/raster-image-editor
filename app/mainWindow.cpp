@@ -4,6 +4,7 @@
 #include "fileIO.hpp"
 #include "brushSizeDialogWidget.hpp"
 #include "resizeCanvasDialogWidget.hpp"
+#include "newImageDialogWidget.hpp"
 #include <qwidget.h>
 #include <imageView.hpp>
 #include <qmessagebox.h>
@@ -20,6 +21,12 @@ MainWindow::MainWindow( QWidget *parent, const char *name )
 
 void MainWindow::open() {
     QMessageBox::about(this, "Test", "This is a test app with a menu bar.");
+}
+
+void MainWindow::fileNew() {
+    newImageDialogWidget newDialog(this);
+    StatusBar::setStatusBarDimensions(this);
+    StatusBar::setStatusBarFileName(this);
 }
 
 void MainWindow::fileOpen() {

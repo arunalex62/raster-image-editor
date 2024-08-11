@@ -8,6 +8,7 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
     QMenuBar *menuBar = mainWindow->menuBar();
     QPopupMenu *fileMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("File", fileMenu);
+    fileMenu->insertItem( "New", mainWindow, SLOT(fileNew()));
     fileMenu->insertItem( "Open", mainWindow, SLOT(fileOpen()));
     fileMenu->insertItem( "Export", mainWindow, SLOT(fileExport()));
 
