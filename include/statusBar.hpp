@@ -14,10 +14,22 @@ public:
     // status bar, such as the image dimensions section
     // and the mouse position section.
     static void setupStatusBar(MainWindow *mainWindow);
-    // Method for updating the status bar with information
-    // during the execution of the program.
-    // This includes mouse position and image dimensions.
-    static void setStatusBar(MainWindow *mainWindow);
+
+    // Method for updating the status bar with image
+    // dimension information during the execution of the program.
+    static void setStatusBarDimensions(MainWindow *mainWindow);
+
+    // Method for updating the status bar with mouse position
+    // information during the execution of the program.
+    static void setStatusBarMouse(MainWindow *mainWindow);
+
+    // Method for updating the status bar with the current
+    // brush colour during the execution of the program.
+    static void setStatusBarBrushColour(MainWindow *mainWindow);
+
+    // Method for updating the status bar with the current
+    // brush size during the execution of the program.
+    static void setStatusBarBrushSize(MainWindow *mainWindow);
 };
 
 
