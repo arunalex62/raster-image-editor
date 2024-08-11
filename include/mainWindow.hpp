@@ -20,6 +20,7 @@ private slots:
     void open();
     void fileOpen();
     void fileExport();
+    void editResizeCanvas();
     void viewGridlinesToggle();
     void colorDialog();
     void brushSizeDialog();

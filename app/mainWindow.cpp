@@ -3,6 +3,7 @@
 #include "statusBar.hpp"
 #include "fileIO.hpp"
 #include "brushSizeDialogWidget.hpp"
+#include "resizeCanvasDialogWidget.hpp"
 #include <qwidget.h>
 #include <imageView.hpp>
 #include <qmessagebox.h>
@@ -22,11 +23,19 @@ void MainWindow::open() {
 }
 
 void MainWindow::fileOpen() {
-    fileName = FileIO::open(this);    
+    QString result = FileIO::open(this);
+    if(result != "") {
+        fileName = result;
+    }   
 }
 
 void MainWindow::fileExport() {
     FileIO::saveAs(this);       
+}
+
+void MainWindow::editResizeCanvas() {
+    resizeCanvasDialogWidget *w = new resizeCanvasDialogWidget(this);
+    w->move(0, 0);
 }
 
 void MainWindow::viewGridlinesToggle() {
