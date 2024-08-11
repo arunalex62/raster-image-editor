@@ -14,15 +14,8 @@
 MainWindow::MainWindow( QWidget *parent, const char *name )
         : QMainWindow( parent, name ), fileName{""}
 {
-    mouseInfo = new QLabel("Mouse Information", this);
-    dimensions = new QLabel("Image Dimensions", this);
-    statusBar()->addWidget(mouseInfo);
-    statusBar()->addWidget(dimensions);
-    mouseInfo->setBackgroundColor(9737364);
-    dimensions->setBackgroundColor(9737364);
     imageView = new ImageView (this);
-    StatusBar::setStatusBar(this);
-    statusBar()->setBackgroundColor(9737364);
+    StatusBar::setupStatusBar(this);
     MenuBar::setupMenuBar(this);
     setCentralWidget(imageView);
 }
