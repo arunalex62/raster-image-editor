@@ -26,6 +26,7 @@ private slots:
     void viewGridlinesToggle();
     void colorDialog();
     void brushSizeDialog();
+    void toolsEraser();
     void toolsColourPicker();
 };
 

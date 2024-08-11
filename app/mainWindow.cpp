@@ -55,6 +55,11 @@ void MainWindow::brushSizeDialog() {
     StatusBar::setStatusBarBrushSize(this);
 }
 
+void MainWindow::toolsEraser() {
+    imageView->setPenColor(paletteBackgroundColor());
+    StatusBar::setStatusBarBrushColour(this);
+}
+
 void MainWindow::toolsColourPicker() {
     imageView->setColourPicker();
 }
