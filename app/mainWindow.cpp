@@ -39,6 +39,10 @@ void MainWindow::fileExport() {
     FileIO::saveAs(this);       
 }
 
+void MainWindow::viewGridlinesToggle() {
+    imageView->gridlinesToggle();
+}
+
 void MainWindow::colorDialog() {
     const QColor color = QColorDialog::getColor(imageView->penColor(), this, "Color Dialog");
     imageView->setPenColor(color);
