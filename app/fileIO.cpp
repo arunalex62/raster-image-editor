@@ -41,7 +41,7 @@ QString FileIO::open(MainWindow *mainWindow) {
             mainWindow->setCentralWidget(mainWindow->imageView);
             mainWindow->imageView->repaint();
             // Update status bar with width/height of new image.
-            StatusBar::setStatusBar(mainWindow);
+            StatusBar::setStatusBarDimensions(mainWindow);
             mainWindow->imageView->gridDrawHelper();
             QMessageBox::information(mainWindow, "Raster Editor", "Image successfully opened.");
         } else {
