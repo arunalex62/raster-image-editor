@@ -13,7 +13,7 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
 
     QPopupMenu *editMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("Edit", editMenu);
-    editMenu->insertItem( "Resize Canvas", mainWindow, SLOT(open()));
+    editMenu->insertItem( "Resize Canvas", mainWindow, SLOT(editResizeCanvas()));
 
     QPopupMenu *viewMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("View", viewMenu);
