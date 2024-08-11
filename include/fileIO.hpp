@@ -7,7 +7,7 @@
 class FileIO {
 public:
     static QString open(MainWindow *mainWindow);
-    static void saveAs(MainWindow *mainWindow);
+    static QString saveAs(MainWindow *mainWindow);
 };
 
 

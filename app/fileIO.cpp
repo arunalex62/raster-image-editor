@@ -37,6 +37,8 @@ QString FileIO::open(MainWindow *mainWindow) {
              return "";
         }
         if(mainWindow->imageView->buffer.load(fileName)) {
+            QFileInfo fileInfo(fileName);
+            fileName = fileInfo.fileName();
             QPixmap pm(mainWindow->imageView->buffer);
             mainWindow->setCentralWidget(mainWindow->imageView);
             mainWindow->imageView->repaint();
@@ -53,7 +55,7 @@ QString FileIO::open(MainWindow *mainWindow) {
     return fileName;
 }
 
-void FileIO::saveAs(MainWindow *mainWindow) {
+QString FileIO::saveAs(MainWindow *mainWindow) {
     // Get current working directory to use as default directory for file export dialog.
     QDir dir;
     // Used this post to figure how to save a QImage file
@@ -68,7 +70,7 @@ void FileIO::saveAs(MainWindow *mainWindow) {
     );
     // Handles if the user exits/cancels out of the dialog.
     if(outputName == "") {
-        return;
+        return "";
     }
     // Verifying if a valid extension was provided.
     QFileInfo fileInfo(outputName);
@@ -79,7 +81,7 @@ void FileIO::saveAs(MainWindow *mainWindow) {
     if(extension != "png" && extension != "jpeg" && extension != "bmp" && extension != "ppm") {
         QMessageBox::warning(mainWindow, "Raster Editor",
         "Please specify a valid image format. Supported image formats are .png, .jpg, .jpeg, .bmp, and .ppm.");
-        return;
+        return "";
     }
 
     // Saving file to the location specified if extension is valid.
@@ -88,10 +90,12 @@ void FileIO::saveAs(MainWindow *mainWindow) {
         // Display status messages depending on if file was saved successfully.
         if(imageSaved) {
             QMessageBox::information(mainWindow, "Raster Editor", "Image saved successfully to: " + outputName);
+            return fileInfo.fileName();
         } else {
             QMessageBox::warning(mainWindow, "Raster Editor",
              "There was an error saving the image. Perhaps the directory is not writable.");
-             return;
+             return "";
         }
     }
+    return "";
 }
