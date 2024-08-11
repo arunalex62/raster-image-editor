@@ -22,7 +22,7 @@ private slots:
     void fileExport();
     void viewGridlinesToggle();
     void colorDialog();
-    void sizeDialog();
+    void brushSizeDialog();
 };
 
 

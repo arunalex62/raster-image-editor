@@ -22,7 +22,7 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
     QPopupMenu *colorDialog = new QPopupMenu( mainWindow );
     menuBar->insertItem("Brush", colorDialog);
     colorDialog->insertItem ( "Select Color", mainWindow, SLOT(colorDialog()));
-    colorDialog->insertItem ( "Set Brush Size", mainWindow, SLOT(sizeDialog()));
+    colorDialog->insertItem ( "Set Brush Size", mainWindow, SLOT(brushSizeDialog()));
 
     QPopupMenu *helpMenu = new QPopupMenu( mainWindow );
     menuBar->insertSeparator();

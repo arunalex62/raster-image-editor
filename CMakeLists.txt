@@ -30,17 +30,18 @@ add_custom_command(
     DEPENDS ${CMAKE_SOURCE_DIR}/include/imageView.hpp
 )
 
-set(SIZEDIALOG_MOC_OUTPUT ${CMAKE_BINARY_DIR}/moc_sizeDialogWidget.cpp)
+set(BRUSHSIZEDIALOG_MOC_OUTPUT ${CMAKE_BINARY_DIR}/moc_brushSizeDialogWidget.cpp)
 add_custom_command(
-    OUTPUT ${SIZEDIALOG_MOC_OUTPUT}
-    COMMAND $ENV{QTDIR}/bin/moc ${CMAKE_SOURCE_DIR}/include/sizeDialogWidget.hpp -o ${SIZEDIALOG_MOC_OUTPUT}
-    DEPENDS ${CMAKE_SOURCE_DIR}/include/sizeDialogWidget.hpp
+    OUTPUT ${BRUSHSIZEDIALOG_MOC_OUTPUT}
+    COMMAND $ENV{QTDIR}/bin/moc ${CMAKE_SOURCE_DIR}/include/brushSizeDialogWidget.hpp
+     -o ${BRUSHSIZEDIALOG_MOC_OUTPUT}
+    DEPENDS ${CMAKE_SOURCE_DIR}/include/brushSizeDialogWidget.hpp
 )
 
 # Add the executable with its necessary source/header files.
 add_executable(editor app/raster_editor.cpp app/mainWindow.cpp app/menuBar.cpp
-app/statusBar.cpp app/fileIO.cpp app/imageView.cpp app/sizeDialogWidget.cpp 
- ${WINDOW_MOC_OUTPUT} ${IMAGE_MOC_OUTPUT} ${SIZEDIALOG_MOC_OUTPUT})
+app/statusBar.cpp app/fileIO.cpp app/imageView.cpp app/brushSizeDialogWidget.cpp 
+ ${WINDOW_MOC_OUTPUT} ${IMAGE_MOC_OUTPUT} ${BRUSHSIZEDIALOG_MOC_OUTPUT})
 
 # Include the Qt include and include/ folder.
 target_include_directories(editor PUBLIC $ENV{QTDIR}/include include)

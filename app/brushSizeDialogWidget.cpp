@@ -1,9 +1,9 @@
-#include "sizeDialogWidget.hpp"
+#include "brushSizeDialogWidget.hpp"
 #include "mainWindow.hpp"
 #include <qslider.h>
 #include <qlayout.h>
 
-sizeDialogWidget::sizeDialogWidget( MainWindow *parent, const char *name )
+brushSizeDialogWidget::brushSizeDialogWidget( MainWindow *parent, const char *name )
         : QDialog( parent, name )
 {
     const int brush_size = parent->imageView->penWidth();
@@ -21,6 +21,6 @@ sizeDialogWidget::sizeDialogWidget( MainWindow *parent, const char *name )
     connect(slider, SIGNAL(valueChanged(int)), parent->imageView, SLOT(setPenWidth(int)));
 }
 
-void sizeDialogWidget::updateSize(const int new_size) {
+void brushSizeDialogWidget::updateSize(const int new_size) {
     displayString->setText(" Set Brush Size: " + std::to_string(new_size));
 }

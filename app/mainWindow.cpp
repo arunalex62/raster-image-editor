@@ -2,13 +2,10 @@
 #include "menuBar.hpp"
 #include "statusBar.hpp"
 #include "fileIO.hpp"
-#include "sizeDialogWidget.hpp"
+#include "brushSizeDialogWidget.hpp"
 #include <qwidget.h>
 #include <imageView.hpp>
-#include <qdockwindow.h>
-#include <qtoolbar.h>
 #include <qmessagebox.h>
-#include <qstatusbar.h>
 #include <qcolordialog.h>
 
 MainWindow::MainWindow( QWidget *parent, const char *name )
@@ -41,8 +38,8 @@ void MainWindow::colorDialog() {
     imageView->setPenColor(color);
 }
 
-void MainWindow::sizeDialog() {
-    sizeDialogWidget *w = new sizeDialogWidget(this);
+void MainWindow::brushSizeDialog() {
+    brushSizeDialogWidget *w = new brushSizeDialogWidget(this);
     w->resize(140, 75);
     w->show();
 }
