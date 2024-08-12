@@ -72,6 +72,10 @@ void MainWindow::viewGridlinesToggle() {
     imageView->gridlinesToggle();
 }
 
+void MainWindow::viewResetCamera() {
+    imageView->resetCamera();
+}
+
 void MainWindow::colorDialog() {
     // Uses Qt's built in QColorDialog and gets the colour, and then
     // sets the current pen colour to that colour.

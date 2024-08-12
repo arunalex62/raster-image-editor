@@ -34,6 +34,7 @@ private slots:
     void fileExport();
     void editResizeCanvas();
     void viewGridlinesToggle();
+    void viewResetCamera();
     void colorDialog();
     void brushSizeDialog();
     void toolsBrush();

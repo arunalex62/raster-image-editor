@@ -13,22 +13,31 @@
 
 ImageView::ImageView( QWidget *parent, const char *name )
     : QWidget( parent, name, WStaticContents ), buffer( 960, 540 ), 
-    mouseX(-1), mouseY(-1), enableColourPicker(false), enableFill(false), 
-     brushColour(Qt::black), pen( Qt::black, 3 ), polyline(3),
-      mousePressed(false), enableGridLines(false) {
+    mouseX(-1), mouseY(-1), pen( Qt::black, 3 ), polyline(3),
+     mousePressed(false), enableGridLines(false), enableColourPicker(false),
+     enableFill(false), enablePanning(false), offsetX(0), offsetY(0) {
 
     // Set default image to white.
     buffer.fill(16777215);
+
+    pen.setCapStyle(Qt::RoundCap);
 
     setMouseTracking(true);
 }
 
 void ImageView::mousePressEvent(QMouseEvent *e) {
-    mousePressed = true;
-    int x = e->pos().x() - (width() - buffer.width())/2;
-    int y = e->pos().y() - (height() - buffer.height())/2;
 
-    if((enableColourPicker || enableFill) && withinBounds(e->pos().x(), e->pos().y())) {
+    if(e->button() == Qt::MidButton) {
+        lastPos = e->pos();
+        enablePanning = true;
+        return;
+    }
+
+    mousePressed = true;
+    int x = e->pos().x() - (width() - buffer.width())/2 - offsetX;
+    int y = e->pos().y() - (height() - buffer.height())/2 - offsetY;
+
+    if((enableColourPicker || enableFill) && withinBounds(e->pos().x()-offsetX, e->pos().y()-offsetY)) {
         if(enableColourPicker) {
             useColourPicker(x, y);
         } else {
@@ -44,31 +53,46 @@ void ImageView::mousePressEvent(QMouseEvent *e) {
 }
 
 void ImageView::mouseReleaseEvent(QMouseEvent *) {
+    enablePanning = false;
     mousePressed = false;
+    repaint();
     gridDrawHelper();
 }
 
 void ImageView::mouseMoveEvent( QMouseEvent *e ) {
-    mouseX = e->pos().x() - (width() - buffer.width())/2;
-    mouseY = e->pos().y() - (height() - buffer.height())/2;
+
+    if (enablePanning) {
+        int dx = e->x() - lastPos.x();
+        int dy = e->y() - lastPos.y();
+        offsetX += dx;
+        offsetY += dy;
+        // scroll(dx, dy);
+        lastPos = e->pos();
+
+        repaint();
+        return;
+    }
+
+    mouseX = e->pos().x() - (width() - buffer.width())/2 - offsetX;
+    mouseY = e->pos().y() - (height() - buffer.height())/2 - offsetY;
     StatusBar::setStatusBarMouse(static_cast<MainWindow*>(parent()));
     if(enableColourPicker || enableFill) {
         return;
     }
-    if (mousePressed && withinBounds(e->pos().x(), e->pos().y())) {
+    if (mousePressed && withinBounds(e->pos().x()-offsetX, e->pos().y()-offsetY)) {
         QPainter painter;
         painter.begin(&buffer);
         painter.setPen( pen );
         polyline[2] = polyline[1];
         polyline[1] = polyline[0];
         polyline[0] = QPoint(std::max(0, std::min(mouseX, buffer.width() - 1)),
-         std::max(0, std::min(mouseY, buffer.height() - 1)));
+        std::max(0, std::min(mouseY, buffer.height() - 1)));
         painter.drawPolyline( polyline );
         painter.end();
 
         QRect r = polyline.boundingRect();
-        int translatedX = r.x() + (width() - buffer.width())/2;
-        int translatedY = r.y() + (height() - buffer.height())/2;
+        int translatedX = r.x() + (width() - buffer.width())/2 + offsetX;
+        int translatedY = r.y() + (height() - buffer.height())/2 + offsetY;
         QRect translatedRect(translatedX, translatedY, r.width(), r.height());
 
         update(translatedRect);
@@ -87,8 +111,8 @@ void ImageView::resizeEvent( QResizeEvent *e ) {
 
 void ImageView::paintEvent( QPaintEvent *) {
     QPainter painter(this);
-    int x = (width() - buffer.width())/2;
-    int y = (height() - buffer.height())/2;
+    int x = (width() - buffer.width())/2 + offsetX;
+    int y = (height() - buffer.height())/2 + offsetY;
 
     painter.drawPixmap(x, y, buffer);
 }
@@ -114,8 +138,8 @@ bool ImageView::withinBounds(const int x, const int y) {
 void ImageView::drawGridlines(QPainter &painter) { 
     painter.setPen(QPen(Qt::lightGray, 1, Qt::DotLine));
 
-    int xStart = (width() - buffer.width()) / 2;
-    int yStart = (height() - buffer.height()) / 2;
+    int xStart = (width() - buffer.width()) / 2 + offsetX;
+    int yStart = (height() - buffer.height()) / 2 + offsetY;
 
     // Drawing the vertical grid lines in increments of 20 pixels.
     for (int x = 0; x < buffer.width(); x += 20) {
@@ -159,9 +183,6 @@ void ImageView::useFill(const int x, const int y) {
     auto point = std::make_pair(x, y);
     queue.push(point);
     QColor oldColour = image.pixel(x, y);
-    if(oldColour == newColor) {
-        return;
-    }
     image.setPixel(x, y, newColor.rgb());
 
     // Checks each pixel in the queue if the adjacent pixels 

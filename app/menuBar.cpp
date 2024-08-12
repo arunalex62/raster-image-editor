@@ -19,6 +19,8 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
     QPopupMenu *viewMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("View", viewMenu);
     viewMenu->insertItem( "Grid-Lines Toggle", mainWindow, SLOT(viewGridlinesToggle()));
+    viewMenu->insertItem( "Reset Camera", mainWindow, SLOT(viewResetCamera()));
+
 
     QPopupMenu *brushMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("Brush", brushMenu);

@@ -53,6 +53,13 @@ public:
         }
     }
 
+    void resetCamera() {
+        offsetX = 0;
+        offsetY = 0;
+        repaint();
+        gridDrawHelper();
+    }
+
     void resizeCanvas(double scaleFactor) {
         QImage imageConversion = buffer.convertToImage();
         QImage scaled = imageConversion.scale(buffer.width()*scaleFactor,
@@ -126,6 +133,11 @@ protected:
 
     bool mousePressed;
     bool enableGridLines; 
+    
+    bool enablePanning;
+    QPoint lastPos;
+    int offsetX;
+    int offsetY;
 
 };
 
