@@ -179,7 +179,7 @@ protected:
     void paintEvent( QPaintEvent *e );
     // Helper function to check if the parameters x and y are within
     // the bounds of the image.
-    bool withinBounds (const int x, const int y);
+    bool withinBounds (const int x, const int y) const;
     // Function that draws grid lines on the canvas.
     void drawGridlines(QPainter &painter);
     // Function that sets the current brush colour to

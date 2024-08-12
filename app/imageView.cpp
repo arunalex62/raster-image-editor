@@ -153,7 +153,7 @@ void ImageView::paintEvent( QPaintEvent *) {
 // because it is centered on the widget frame, so the mouse click coordinates should
 // to be checked against the centered image's coordinates, not (0,0).
 
-bool ImageView::withinBounds(const int x, const int y) {
+bool ImageView::withinBounds(const int x, const int y) const {
     if(x >= (width() - buffer.width())/2 
     && x < width() - (width() - buffer.width())/2
     && y >= (height() - buffer.height())/2
