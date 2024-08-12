@@ -13,30 +13,37 @@
 
 ImageView::ImageView( QWidget *parent, const char *name )
     : QWidget( parent, name, WStaticContents ), buffer( 960, 540 ), 
-    mouseX(-1), mouseY(-1), pen( Qt::black, 3 ), polyline(3),
-     mousePressed(false), enableGridLines(false), enableColourPicker(false),
-     enableFill(false), enablePanning(false), offsetX(0), offsetY(0) {
+    mouseX(-1), mouseY(-1), enableColourPicker(false), enableFill(false),
+     pen( Qt::black, 3 ), polyline(3), mousePressed(false),
+      enableGridLines(false), enablePanning(false), offsetX(0), offsetY(0) {
 
     // Set default image to white.
     buffer.fill(16777215);
 
     pen.setCapStyle(Qt::RoundCap);
-
+    // This setting needs to be enabled for mouse position
+    // display functionality in the status bar.
     setMouseTracking(true);
 }
 
 void ImageView::mousePressEvent(QMouseEvent *e) {
 
     if(e->button() == Qt::MidButton) {
+        // If the middle mouse button is pressed, enable
+        // panning functionality.
         lastPos = e->pos();
         enablePanning = true;
         return;
     }
 
     mousePressed = true;
+    // Calculates the current pixel position of the mouse click,
+    // taking into account the image is centered, and potentially offset
+    // due to panning.
     int x = e->pos().x() - (width() - buffer.width())/2 - offsetX;
     int y = e->pos().y() - (height() - buffer.height())/2 - offsetY;
-
+    // If the colour picker or fill tool are enabled, those methods are called. Only if the
+    // current mouse position is within the image itself.
     if((enableColourPicker || enableFill) && withinBounds(e->pos().x()-offsetX, e->pos().y()-offsetY)) {
         if(enableColourPicker) {
             useColourPicker(x, y);
@@ -49,40 +56,50 @@ void ImageView::mousePressEvent(QMouseEvent *e) {
     // Map the coordinates within the image boundaries.
     x = std::max(0, std::min(x, buffer.width() - 1));
     y = std::max(0, std::min(y, buffer.height() - 1));
+    // Sets the line segment array all to 1 Point if a single click was performed.
     polyline[2] = polyline[1] = polyline[0] = QPoint(x, y);
 }
 
 void ImageView::mouseReleaseEvent(QMouseEvent *) {
     enablePanning = false;
     mousePressed = false;
+    // When the mouse is released, the canvas will be 
+    // repainted and with grid lines (if enabled).
     repaint();
     gridDrawHelper();
 }
 
 void ImageView::mouseMoveEvent( QMouseEvent *e ) {
-
+    // Calculations to move the image if panning is enabled
+    // The user has to actively hold middle mouse button for this
+    // to happen.
     if (enablePanning) {
         int dx = e->x() - lastPos.x();
         int dy = e->y() - lastPos.y();
         offsetX += dx;
         offsetY += dy;
-        // scroll(dx, dy);
         lastPos = e->pos();
-
+        // Repaint to display to the user the new canvas position.
         repaint();
         return;
     }
-
+    // Current mouse position on the image is stored, taking into
+    // account the image being centered, and a potential panning offset.
     mouseX = e->pos().x() - (width() - buffer.width())/2 - offsetX;
     mouseY = e->pos().y() - (height() - buffer.height())/2 - offsetY;
+    // Updates the status bar with the mouse information just stored.
     StatusBar::setStatusBarMouse(static_cast<MainWindow*>(parent()));
     if(enableColourPicker || enableFill) {
         return;
     }
     if (mousePressed && withinBounds(e->pos().x()-offsetX, e->pos().y()-offsetY)) {
+        // Painting functionality.
         QPainter painter;
         painter.begin(&buffer);
         painter.setPen( pen );
+        // polyline is an array of points, so each time 
+        // the user paints, the connected line segments from the
+        // points stored in polyline are drawn on the screen.
         polyline[2] = polyline[1];
         polyline[1] = polyline[0];
         polyline[0] = QPoint(std::max(0, std::min(mouseX, buffer.width() - 1)),
@@ -90,25 +107,36 @@ void ImageView::mouseMoveEvent( QMouseEvent *e ) {
         painter.drawPolyline( polyline );
         painter.end();
 
+        // This is an optimized way to update only the area of image 
+        // that was painted on. This avoids having to repaint the whole image
+        // constantly to display changes to the user.
         QRect r = polyline.boundingRect();
         int translatedX = r.x() + (width() - buffer.width())/2 + offsetX;
         int translatedY = r.y() + (height() - buffer.height())/2 + offsetY;
         QRect translatedRect(translatedX, translatedY, r.width(), r.height());
 
+        // The rectangle that bounds the drawing, along with its position
+        // are calculated and that area of the image is repainted dynamically
+        // while drawing.
         update(translatedRect);
     }
 }
-
+// This method gets called each time the window is resized, like when resizing manually
+// using the corner of the window and dragging.
 void ImageView::resizeEvent( QResizeEvent *e ) {
     QWidget::resizeEvent(e);
     update();
+    // After resize, if grid lines are enabled, re draw the grid lines.
     if(enableGridLines) {
+        // Need to put 500ms timer because repaint() gets called automatically
+        // after resizeEvent(), and that would get rid of the grid lines.
         QTimer *timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(gridDrawHelper()));
         timer->start(500, TRUE);
     }
 }
 
+// Repaints the image, taking into account any current offsets.
 void ImageView::paintEvent( QPaintEvent *) {
     QPainter painter(this);
     int x = (width() - buffer.width())/2 + offsetX;
@@ -135,6 +163,7 @@ bool ImageView::withinBounds(const int x, const int y) {
     return false;
 }
 
+// Function that draws the grid lines onto the image (if enabled).
 void ImageView::drawGridlines(QPainter &painter) { 
     painter.setPen(QPen(Qt::lightGray, 1, Qt::DotLine));
 
@@ -152,6 +181,8 @@ void ImageView::drawGridlines(QPainter &painter) {
     }
 }
 
+// Easy to call helper function that checks if grid lines are
+// enabled before calling the method.
 void ImageView::gridDrawHelper() {
     if(enableGridLines) {
         QPainter painter(this);
@@ -159,12 +190,19 @@ void ImageView::gridDrawHelper() {
     }
 }
 
+// This method gets called when the colour picker is activated and clicked
+// on a part of the image.
 void ImageView::useColourPicker(const int x, const int y) {
+    // Converts QPixmap buffer to QImage (to access pixel-level data).
     QImage image = buffer.convertToImage();
+    // Gets colour at coordinates passed in.
     QColor color(image.pixel(x, y));
+    // Sets the current pen colour to that colour.
     setPenColor(color);
+    // Changes the cursor back to normal.
     QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     enableColourPicker = false;
+    // Updates the status bar with the newly selected current colour.
     StatusBar::setStatusBarBrushColour(static_cast<MainWindow*>(parent()));
     return;
 }
@@ -224,7 +262,7 @@ void ImageView::useFill(const int x, const int y) {
     buffer = image;
     repaint();
     gridDrawHelper();
-
+    
     QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     enableFill = false;
     return;
