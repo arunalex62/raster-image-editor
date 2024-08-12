@@ -14,8 +14,10 @@ if(NOT DEFINED ENV{QTDIR})
      to build the program.")
 endif()
 
-# Need to manually run moc due to using older Qt version,
+# Need to manually run moc due to using older Qt version
 # that is not properly integrated with system/CMake.
+# Used a comment on this StackOverflow post to learn how to do this:
+# https://stackoverflow.com/questions/45994432/how-to-generate-moc-cpp-files-using-cmake
 set(WINDOW_MOC_OUTPUT ${CMAKE_BINARY_DIR}/moc_mainWindow.cpp)
 add_custom_command(
     OUTPUT ${WINDOW_MOC_OUTPUT}
@@ -49,3 +51,9 @@ target_include_directories(editor PUBLIC $ENV{QTDIR}/include include)
 
 # Link the Qt libraries to the executable
 target_link_libraries(editor $ENV{QTDIR}/lib/libqt.so.3.3)
+
+# Install the editor program into the bin directory.
+install(TARGETS editor DESTINATION bin)
+
+# Install the demo program into the bin directory.
+install(PROGRAMS demo DESTINATION bin)
