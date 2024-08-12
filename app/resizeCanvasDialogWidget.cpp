@@ -2,6 +2,7 @@
 #include "mainWindow.hpp"
 #include <qinputdialog.h>
 #include <qmessagebox.h>
+#include "statusBar.hpp"
 
 resizeCanvasDialogWidget::resizeCanvasDialogWidget( MainWindow *parent, const char *name )
         : QDialog( parent, name )
@@ -31,5 +32,6 @@ resizeCanvasDialogWidget::resizeCanvasDialogWidget( MainWindow *parent, const ch
              return;
         }
         parent->imageView->resizeCanvas(scaleFactor);
+        StatusBar::setStatusBarDimensions(parent);
     }
 }
