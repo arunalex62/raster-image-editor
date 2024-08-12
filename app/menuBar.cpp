@@ -27,6 +27,7 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
 
     QPopupMenu *toolsMenu = new QPopupMenu( mainWindow );
     menuBar->insertItem("Tools", toolsMenu);
+    toolsMenu->insertItem ( "Brush", mainWindow, SLOT(toolsBrush()));
     toolsMenu->insertItem ( "Eraser", mainWindow, SLOT(toolsEraser()));
     toolsMenu->insertItem ( "Fill", mainWindow, SLOT(toolsFill()));
     toolsMenu->insertItem ( "Colour Picker", mainWindow, SLOT(toolsColourPicker()));
