@@ -7,6 +7,7 @@
 #include <qimage.h>
 
 QString FileIO::open(MainWindow *mainWindow) {
+    // Gets the current directory information.
     QDir dir;
     // Taken from QFileDialog Qt Class Reference Page:
     // https://doc.qt.io/archives/3.3/qfiledialog.html
@@ -17,15 +18,20 @@ QString FileIO::open(MainWindow *mainWindow) {
                     "open file dialog",
                     "Choose a file" );
 
-    // If a file was chosen, then load that file into the imageStorage array
-    // and display it to the user through a Pixmap.
     if (fileName != "") {
+        // If a file was chosen, store it into QImage to 
+        // find its dimensions.
         QImage image(fileName);
+
+        // Case where the file could not be read properly, or is null.
         if(image.isNull()) {
             QMessageBox::warning(mainWindow, "Raster Editor",
              "There was an error opening the image. Perhaps the file is corrupted.");
              return "";
         }
+        // Handle the dimension sizes of the loaded image files.
+        // The limit on the images dimensions for this program is 2000 pixels
+        // in each dimension for the sake of performance.
         if(image.width() > 2000 || image.width() < 1) {
             QMessageBox::warning(mainWindow, "Raster Editor",
              "Please ensure the image width is between 1 and 2000 pixels.");
@@ -36,14 +42,18 @@ QString FileIO::open(MainWindow *mainWindow) {
              "Please ensure the image height is between 1 and 2000 pixels.");
              return "";
         }
+        // At this point, the image is "safe" to load into the viewer.
         if(mainWindow->imageView->buffer.load(fileName)) {
+            // Getting the file name to display in the status bar.
             QFileInfo fileInfo(fileName);
             fileName = fileInfo.fileName();
-            QPixmap pm(mainWindow->imageView->buffer);
+            // Setting the central display of the main window
+            // as the image just loaded in.
             mainWindow->setCentralWidget(mainWindow->imageView);
             mainWindow->imageView->repaint();
             // Update status bar with width/height of new image.
             StatusBar::setStatusBarDimensions(mainWindow);
+            // Redraw grid-lines (if setting is enabled).
             mainWindow->imageView->gridDrawHelper();
             QMessageBox::information(mainWindow, "Raster Editor", "Image successfully opened.");
         } else {
@@ -85,17 +95,14 @@ QString FileIO::saveAs(MainWindow *mainWindow) {
     }
 
     // Saving file to the location specified if extension is valid.
-    if (outputName != "") {
-        bool imageSaved = mainWindow->imageView->buffer.save(outputName, extension.upper());
-        // Display status messages depending on if file was saved successfully.
-        if(imageSaved) {
-            QMessageBox::information(mainWindow, "Raster Editor", "Image saved successfully to: " + outputName);
-            return fileInfo.fileName();
-        } else {
-            QMessageBox::warning(mainWindow, "Raster Editor",
-             "There was an error saving the image. Perhaps the directory is not writable.");
-             return "";
-        }
+    bool imageSaved = mainWindow->imageView->buffer.save(outputName, extension.upper());
+    // Display status messages depending on if file was saved successfully.
+    if(imageSaved) {
+        QMessageBox::information(mainWindow, "Raster Editor", "Image saved successfully to: " + outputName);
+        return fileInfo.fileName();
+    } else {
+        QMessageBox::warning(mainWindow, "Raster Editor",
+            "There was an error saving the image. Perhaps the directory is not writable.");
+            return "";
     }
-    return "";
 }
