@@ -9,11 +9,13 @@
 #include <statusBar.hpp>
 #include "mainWindow.hpp"
 #include <qtimer.h>
+#include <queue>
 
 ImageView::ImageView( QWidget *parent, const char *name )
     : QWidget( parent, name, WStaticContents ), buffer( 960, 540 ), 
     mouseX(-1), mouseY(-1), pen( Qt::black, 3 ), polyline(3),
-     mousePressed(false), enableGridLines(false), enableColourPicker(false) {
+     mousePressed(false), enableGridLines(false), enableColourPicker(false),
+     enableFill(false) {
 
     // Set default image to white.
     buffer.fill(16777215);
@@ -26,8 +28,12 @@ void ImageView::mousePressEvent(QMouseEvent *e) {
     int x = e->pos().x() - (width() - buffer.width())/2;
     int y = e->pos().y() - (height() - buffer.height())/2;
 
-    if(enableColourPicker && withinBounds(e)) {
-        useColourPicker(x, y);
+    if((enableColourPicker || enableFill) && withinBounds(e->pos().x(), e->pos().y())) {
+        if(enableColourPicker) {
+            useColourPicker(x, y);
+        } else {
+            useFill(x, y);
+        }
         return;
     }
 
@@ -46,10 +52,10 @@ void ImageView::mouseMoveEvent( QMouseEvent *e ) {
     mouseX = e->pos().x() - (width() - buffer.width())/2;
     mouseY = e->pos().y() - (height() - buffer.height())/2;
     StatusBar::setStatusBarMouse(static_cast<MainWindow*>(parent()));
-    if(enableColourPicker) {
+    if(enableColourPicker || enableFill) {
         return;
     }
-    if (mousePressed && withinBounds(e)) {
+    if (mousePressed && withinBounds(e->pos().x(), e->pos().y())) {
         QPainter painter;
         painter.begin(&buffer);
         painter.setPen( pen );
@@ -95,11 +101,11 @@ void ImageView::paintEvent( QPaintEvent *) {
 // because it is centered on the widget frame, so the mouse click coordinates should
 // to be checked against the centered image's coordinates, not (0,0).
 
-bool ImageView::withinBounds(const QMouseEvent *e) {
-    if(e->pos().x() >= (width() - buffer.width())/2 
-    && e->pos().x() < width() - (width() - buffer.width())/2
-    && e->pos().y() >= (height() - buffer.height())/2
-    && e->pos().y() < height() - (height() - buffer.height())/2) {
+bool ImageView::withinBounds(const int x, const int y) {
+    if(x >= (width() - buffer.width())/2 
+    && x < width() - (width() - buffer.width())/2
+    && y >= (height() - buffer.height())/2
+    && y < height() - (height() - buffer.height())/2) {
         return true;
     }
     return false;
@@ -136,5 +142,66 @@ void ImageView::useColourPicker(const int x, const int y) {
     QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     enableColourPicker = false;
     StatusBar::setStatusBarBrushColour(static_cast<MainWindow*>(parent()));
+    return;
+}
+
+// Used the flood fill fill algorithm from this website:
+// https://www.geeksforgeeks.org/flood-fill-algorithm/
+void ImageView::useFill(const int x, const int y) {
+    // First need to convert QPixmap buffer to 
+    // QImage for pixel-level access to image.
+    QImage image = buffer.convertToImage();
+    QColor newColor(penColor());
+
+    // Queue that holds pixels for flood-fill
+    // algorithm.
+    std::queue<std::pair<int, int> > queue;
+    auto point = std::make_pair(x, y);
+    queue.push(point);
+    QColor oldColour = image.pixel(x, y);
+    image.setPixel(x, y, newColor.rgb());
+
+    // Checks each pixel in the queue if the adjacent pixels 
+    // can be filled.
+    while(queue.size() > 0) {
+        auto currentPoint = queue.front();
+        queue.pop();
+        int x = currentPoint.first;
+        int y = currentPoint.second;
+        // Check adjacent pixels if they are the same colour, then fill them
+        // and add that pixel to the queue.
+        if(x+1< buffer.width() && image.pixel(x+1, y) == oldColour.rgb()) {
+            image.setPixel(x+1, y, newColor.rgb());
+            point.first = x + 1;
+            point.second = y;
+            queue.push(point);
+        }
+        if(x-1 >= 0 && image.pixel(x-1, y) == oldColour.rgb()) {
+            image.setPixel(x-1, y, newColor.rgb());
+            point.first = x - 1;
+            point.second = y;
+            queue.push(point);
+        }
+        if(y+1 < buffer.height() && image.pixel(x, y+1) == oldColour.rgb()) {
+            image.setPixel(x, y+1, newColor.rgb());
+            point.first = x;
+            point.second = y + 1;
+            queue.push(point);
+        }
+        if(y-1 >= 0 && image.pixel(x, y-1) == oldColour.rgb()) {
+            image.setPixel(x, y-1, newColor.rgb());
+            point.first = x;
+            point.second = y - 1;
+            queue.push(point);
+        }
+    }
+    // Setting buffer (QPixmap) to filled QImage
+    // using copy assignment operator).
+    buffer = image;
+    repaint();
+    gridDrawHelper();
+
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+    enableFill = false;
     return;
 }

@@ -14,6 +14,7 @@
 #include <qpainter.h>
 #include <qimage.h>
 #include <qcursor.h>
+#include <qmessagebox.h>
 
 class QMouseEvent;
 class QResizeEvent;
@@ -58,11 +59,16 @@ public:
     }
 
     void setColourPicker() {
-        enableColourPicker = !enableColourPicker;
-        if(enableColourPicker) {
-            QApplication::setOverrideCursor(QCursor(Qt::CrossCursor));
+        if(enableFill) {
+            QMessageBox::warning(this, "Raster Editor",
+             "Please disable fill before enabling colour picker."); 
         } else {
-            QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+            enableColourPicker = !enableColourPicker;
+            if(enableColourPicker) {
+                QApplication::setOverrideCursor(QCursor(Qt::CrossCursor));
+            } else {
+                QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+            }
         }
     }
 
@@ -71,6 +77,20 @@ public:
         buffer.fill(16777215);
         repaint();
         gridDrawHelper();
+    }
+
+    void setFillMode() {
+        if(enableColourPicker) {
+            QMessageBox::warning(this, "Raster Editor",
+             "Please disable colour picker before enabling fill.");
+        } else {
+            enableFill = !enableFill;
+            if(enableFill) {
+                QApplication::setOverrideCursor(QCursor(Qt::PointingHandCursor));
+            } else {
+                QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+            }
+        }
     }
 
     QPixmap buffer;
@@ -89,9 +109,10 @@ protected:
     void mouseMoveEvent( QMouseEvent *e );
     void resizeEvent( QResizeEvent *e );
     void paintEvent( QPaintEvent *e );
-    bool withinBounds (const QMouseEvent *e);
+    bool withinBounds (const int x, const int y);
     void drawGridlines(QPainter &painter);
     void useColourPicker(const int x, const int y);
+    void useFill(const int x, const int y);
 
     QPen pen;
     QPointArray polyline;
@@ -99,6 +120,7 @@ protected:
     bool mousePressed;
     bool enableGridLines; 
     bool enableColourPicker;
+    bool enableFill;
 
 };
 
