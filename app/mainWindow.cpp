@@ -69,6 +69,10 @@ void MainWindow::toolsEraser() {
     StatusBar::setStatusBarBrushColour(this);
 }
 
+void MainWindow::toolsFill() {
+    imageView->setFillMode();
+}
+
 void MainWindow::toolsColourPicker() {
     imageView->setColourPicker();
 }
