@@ -9,6 +9,8 @@
 #include <imageView.hpp>
 #include <qmessagebox.h>
 #include <qcolordialog.h>
+#include <qcursor.h>
+#include <qapplication.h>
 
 MainWindow::MainWindow( QWidget *parent, const char *name )
         : QMainWindow( parent, name ), fileName{""}
@@ -88,10 +90,28 @@ void MainWindow::brushSizeDialog() {
     StatusBar::setStatusBarBrushSize(this);
 }
 
+void MainWindow::toolsBrush() {
+    // Sets the pen colour to the stored
+    // pen colour previously.
+    
+    // Disable other tools before using brush.
+    imageView->enableFill = false;
+    imageView->enableColourPicker = false;
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+    imageView->setPenColor(imageView->brushColour);
+    // Then updates the status bar with the selected colour. 
+    StatusBar::setStatusBarBrushColour(this);
+}
+
 void MainWindow::toolsEraser() {
     // Sets the pen colour to the background
     // colour of the application because transparency
     // is not functional in Qt3.
+
+    // Disable other tools before using eraser.
+    imageView->enableFill = false;
+    imageView->enableColourPicker = false;
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     imageView->setPenColor(paletteBackgroundColor());
     // Then updates the status bar with the selected colour. 
     StatusBar::setStatusBarBrushColour(this);
@@ -99,10 +119,14 @@ void MainWindow::toolsEraser() {
 
 void MainWindow::toolsFill() {
     // Sets the imageView object in fill mode.
+    // Disable other tools before using fill.
+    imageView->enableColourPicker = false;
     imageView->setFillMode();
 }
 
 void MainWindow::toolsColourPicker() {
      // Sets the imageView object in colour pick mode.
+     // Disable other tools before using colour picker.
+     imageView->enableFill = false;
     imageView->setColourPicker();
 }
