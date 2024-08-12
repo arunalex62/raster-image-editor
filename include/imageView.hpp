@@ -15,6 +15,7 @@
 #include <qimage.h>
 #include <qcursor.h>
 #include <qmessagebox.h>
+#include <qcolor.h>
 
 class QMouseEvent;
 class QResizeEvent;
@@ -29,6 +30,9 @@ public:
 
     void setPenColor( const QColor &c ) { 
         pen.setColor( c );
+        if(c != paletteBackgroundColor()) {
+            brushColour = c;
+        }
     }
 
     QColor penColor() { 
@@ -96,6 +100,9 @@ public:
     QPixmap buffer;
     int mouseX;
     int mouseY;
+    bool enableColourPicker;
+    bool enableFill;
+    QColor brushColour;
 
 public slots:
     void setPenWidth( int w ) { 
@@ -119,8 +126,6 @@ protected:
 
     bool mousePressed;
     bool enableGridLines; 
-    bool enableColourPicker;
-    bool enableFill;
 
 };
 

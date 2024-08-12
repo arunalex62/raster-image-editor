@@ -13,9 +13,9 @@
 
 ImageView::ImageView( QWidget *parent, const char *name )
     : QWidget( parent, name, WStaticContents ), buffer( 960, 540 ), 
-    mouseX(-1), mouseY(-1), pen( Qt::black, 3 ), polyline(3),
-     mousePressed(false), enableGridLines(false), enableColourPicker(false),
-     enableFill(false) {
+    mouseX(-1), mouseY(-1), enableColourPicker(false), enableFill(false), 
+     brushColour(Qt::black), pen( Qt::black, 3 ), polyline(3),
+      mousePressed(false), enableGridLines(false) {
 
     // Set default image to white.
     buffer.fill(16777215);
@@ -159,6 +159,9 @@ void ImageView::useFill(const int x, const int y) {
     auto point = std::make_pair(x, y);
     queue.push(point);
     QColor oldColour = image.pixel(x, y);
+    if(oldColour == newColor) {
+        return;
+    }
     image.setPixel(x, y, newColor.rgb());
 
     // Checks each pixel in the queue if the adjacent pixels 
