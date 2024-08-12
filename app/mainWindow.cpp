@@ -23,10 +23,6 @@ MainWindow::MainWindow( QWidget *parent, const char *name )
     setCentralWidget(imageView);
 }
 
-void MainWindow::open() {
-    QMessageBox::about(this, "Test", "This is a test app with a menu bar.");
-}
-
 void MainWindow::fileNew() {
     // Displays a dialog to the user to prompt
     // them for the new width/height.
@@ -137,4 +133,9 @@ void MainWindow::toolsColourPicker() {
      // Disable other tools before using colour picker.
      imageView->enableFill = false;
     imageView->setColourPicker();
+}
+
+void MainWindow::helpAbout() {
+    QMessageBox::information(this, "About", 
+    "For information, please refer to the demonstration video going over the functionality: https://youtu.be/YRV_4dGv_FY");
 }

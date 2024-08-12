@@ -28,7 +28,6 @@ public:
 
 // These slots are for the menu bar button functionalities.
 private slots:
-    void open();
     void fileNew();
     void fileOpen();
     void fileExport();
@@ -41,6 +40,7 @@ private slots:
     void toolsEraser();
     void toolsFill();
     void toolsColourPicker();
+    void helpAbout();
 };
 
 

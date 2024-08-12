@@ -45,5 +45,5 @@ void MenuBar::setupMenuBar(QMainWindow *mainWindow)
     QPopupMenu *helpMenu = new QPopupMenu( mainWindow );
     menuBar->insertSeparator();
     menuBar->insertItem("Help", helpMenu);
-    helpMenu->insertItem( "About", mainWindow, SLOT(open()));
+    helpMenu->insertItem( "About", mainWindow, SLOT(helpAbout()));
 }
