@@ -50,7 +50,7 @@ app/resizeCanvasDialogWidget.cpp app/newImageDialogWidget.cpp
 target_include_directories(editor PUBLIC $ENV{QTDIR}/include include)
 
 # Link the Qt libraries to the executable
-target_link_libraries(editor $ENV{QTDIR}/lib/libqt.so.3.3)
+target_link_libraries(editor $ENV{QTDIR}/lib/libqt-mt.so.3.3)
 
 # Install the editor program into the bin directory.
 install(TARGETS editor DESTINATION bin)
