@@ -32,6 +32,8 @@ resizeCanvasDialogWidget::resizeCanvasDialogWidget( MainWindow *parent, const ch
              return;
         }
         parent->imageView->resizeCanvas(scaleFactor);
+        // Updates the status bar with the dimensions
+        // of the resulting image.
         StatusBar::setStatusBarDimensions(parent);
     }
 }

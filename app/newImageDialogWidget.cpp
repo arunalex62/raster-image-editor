@@ -18,7 +18,10 @@ newImageDialogWidget::newImageDialogWidget( MainWindow *parent, const char *name
                 "Raster Editor", "Enter a height between 1 and 2000 pixels.", 
                 500, 1, 2000, 0, &heightValid, this );
         if(heightValid) {
+            // If everything is successful, then create the new 
+            // image with the specified dimensions.
             parent->imageView->createNewImage(width, height);
+            // Sets the filename back to "" since it's a new image.
             parent->fileName = "";
         } else {
             return;

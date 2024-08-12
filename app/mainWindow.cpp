@@ -69,10 +69,14 @@ void MainWindow::editResizeCanvas() {
 }
 
 void MainWindow::viewGridlinesToggle() {
+    // Toggles the enableGridlines setting on the 
+    // imageView object.
     imageView->gridlinesToggle();
 }
 
 void MainWindow::viewResetCamera() {
+    // Resets the camera position back to
+    // the center.
     imageView->resetCamera();
 }
 
