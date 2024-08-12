@@ -12,5 +12,11 @@ Installation Steps:
 To run a demonstration, use the commands:
     $INSTALL_DIR/bin/demo
 
+The program can import/export image files in the following formats:
+1. PNG
+2. JPG/JPEG
+3. BMP
+4. PPM
+
 Note: If you are running this program remotely through command line
 (such as through SSH), please ensure X11 is enabled to see the GUI.
