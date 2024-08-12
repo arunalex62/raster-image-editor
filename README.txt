@@ -11,3 +11,6 @@ Installation Steps:
 
 To run a demonstration, use the commands:
     $INSTALL_DIR/bin/demo
+
+Note: If you are running this program remotely through command line
+(such as through SSH), please ensure X11 is enabled to see the GUI.
