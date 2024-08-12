@@ -13,6 +13,8 @@
 MainWindow::MainWindow( QWidget *parent, const char *name )
         : QMainWindow( parent, name ), fileName{""}
 {
+    // Initializes the menu bar, status bar, and central image
+    // widget of the application with their information.
     imageView = new ImageView (this);
     StatusBar::setupStatusBar(this);
     MenuBar::setupMenuBar(this);
@@ -24,13 +26,20 @@ void MainWindow::open() {
 }
 
 void MainWindow::fileNew() {
+    // Displays a dialog to the user to prompt
+    // them for the new width/height.
+    // Then updates the status bar dimensions
+    // display and the current file name.
     newImageDialogWidget newDialog(this);
     StatusBar::setStatusBarDimensions(this);
     StatusBar::setStatusBarFileName(this);
 }
 
 void MainWindow::fileOpen() {
+    // Opens a file selector in the current directory.
     QString result = FileIO::open(this);
+    // If a file was selected, then set the current 
+    // file name to the opened file name.
     if(result != "") {
         fileName = result;
         StatusBar::setStatusBarFileName(this);
@@ -38,7 +47,12 @@ void MainWindow::fileOpen() {
 }
 
 void MainWindow::fileExport() {
+    // Exports the current file by opening
+    // a file dialog for the user to enter a file name.
     QString result = FileIO::saveAs(this);
+    // If a file was exported, set the current
+    // file name of the program to the file name
+    // of the exported file.
     if(result != "") {
         fileName = result;
         StatusBar::setStatusBarFileName(this); 
@@ -46,6 +60,8 @@ void MainWindow::fileExport() {
 }
 
 void MainWindow::editResizeCanvas() {
+    // Displays a dialog to the user to enter in a scale factor
+    // to resize the image by.
     resizeCanvasDialogWidget *w = new resizeCanvasDialogWidget(this);
     w->move(0, 0);
 }
@@ -55,27 +71,38 @@ void MainWindow::viewGridlinesToggle() {
 }
 
 void MainWindow::colorDialog() {
+    // Uses Qt's built in QColorDialog and gets the colour, and then
+    // sets the current pen colour to that colour.
+    // Then updates the status bar with the selected colour.
     const QColor color = QColorDialog::getColor(imageView->penColor(), this, "Color Dialog");
     imageView->setPenColor(color);
     StatusBar::setStatusBarBrushColour(this);
 }
 
 void MainWindow::brushSizeDialog() {
+    // Uses custom dialog with slider to select brush size.
     brushSizeDialogWidget brushDialog(this);
     brushDialog.resize(140, 75);
     brushDialog.exec();
+    // Sets the status bar to display the newly set brush size.
     StatusBar::setStatusBarBrushSize(this);
 }
 
 void MainWindow::toolsEraser() {
+    // Sets the pen colour to the background
+    // colour of the application because transparency
+    // is not functional in Qt3.
     imageView->setPenColor(paletteBackgroundColor());
+    // Then updates the status bar with the selected colour. 
     StatusBar::setStatusBarBrushColour(this);
 }
 
 void MainWindow::toolsFill() {
+    // Sets the imageView object in fill mode.
     imageView->setFillMode();
 }
 
 void MainWindow::toolsColourPicker() {
+     // Sets the imageView object in colour pick mode.
     imageView->setColourPicker();
 }
