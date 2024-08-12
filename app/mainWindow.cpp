@@ -38,8 +38,11 @@ void MainWindow::fileOpen() {
 }
 
 void MainWindow::fileExport() {
-    fileName = FileIO::saveAs(this);     
-    StatusBar::setStatusBarFileName(this);  
+    QString result = FileIO::saveAs(this);
+    if(result != "") {
+        fileName = result;
+        StatusBar::setStatusBarFileName(this); 
+    }    
 }
 
 void MainWindow::editResizeCanvas() {
