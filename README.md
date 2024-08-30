@@ -4,14 +4,16 @@
 - Arun Alex
 - Julian France
 
-### Video Demonstration
+### Video Presentation
+Here is a video presentation for our project, including background motivation,
+challenges faced, and a demonstration of the software.
 [![Video Link](thumbnail.png)](https://www.youtube.com/watch?v=YRV_4dGv_FY "Raster Image Editor")
 
-### How to run
+### How to download/run
 - Go to the [Releases](https://github.com/arunalex62/raster-image-editor/releases) page and download the latest release.
 - Please be sure to follow the requirements on the release to run the program.
 
-### Installation Steps (if building the program manually):
+### Installation Steps (if building the program from source):
     Let $TOP_DIR denote the directory containing this README file.
     Let $INSTALL_DIR denote the directory into which this
     software is to be installed.
