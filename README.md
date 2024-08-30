@@ -7,6 +7,7 @@
 ### Video Presentation
 Here is a video presentation for our project, including background motivation,
 challenges faced, and a demonstration of the software.
+
 [![Video Link](thumbnail.png)](https://www.youtube.com/watch?v=YRV_4dGv_FY "Raster Image Editor")
 
 ### How to download/run
